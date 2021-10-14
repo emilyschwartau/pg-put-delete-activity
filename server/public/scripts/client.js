@@ -7,6 +7,7 @@ $(document).ready(function(){
 function addClickHandlers() {
   $('#submitBtn').on('click', handleSubmit);
   $(`#bookShelf`).on(`click`, `.deleteBtn`, handleDelete);
+  $(`#bookShelf`).on(`click`, `.isReadBtn`, handleReadStatus);
   // TODO - Add code for edit & delete buttons
 }
 
@@ -27,7 +28,6 @@ function handleDelete() {
       alert(error);
   })
 }
-
 
 function handleSubmit() {
   console.log('Submit button clicked.');
@@ -77,8 +77,28 @@ function renderBooks(books) {
       <tr data-id="${book.id}">
         <td>${book.title}</td>
         <td>${book.author}</td>
+        <td>${book.isRead}</td>
+        <td><button class="isReadBtn">Mark as Read</button></td>
         <td><button class="deleteBtn">Delete</button></td>
       </tr>
     `);
   }
+}
+
+//function to handle read click
+function handleReadStatus() {
+  console.log(`clicked`);
+  let id = $(this).closest('tr').data('id');
+
+  console.log(id);
+
+  $.ajax({
+     method: 'PUT',
+     url: `/books/${id}`,
+  }).then(function(response) {
+      console.log(response);
+      refreshBooks()
+  }).catch(function(error) {
+      alert(error);
+  })
 }
