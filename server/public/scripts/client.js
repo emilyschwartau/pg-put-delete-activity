@@ -6,9 +6,28 @@ $(document).ready(function(){
 
 function addClickHandlers() {
   $('#submitBtn').on('click', handleSubmit);
-
+  $(`#bookShelf`).on(`click`, `.deleteBtn`, handleDelete);
   // TODO - Add code for edit & delete buttons
 }
+
+function handleDelete() {
+  //need to put id somewhere
+  let idToDelete = $(this).closest('tr').data('id');
+  
+  console.log(idToDelete);
+ 
+  $.ajax({
+    method: 'DELETE',
+    url: `/books/${idToDelete}`  
+  }).then(function(response) {
+      console.log(response);
+        //db is updated, dom is not. Call GET again.
+        refreshBooks();
+  }).catch(function(error) {
+      alert(error);
+  })
+}
+
 
 function handleSubmit() {
   console.log('Submit button clicked.');
@@ -55,9 +74,10 @@ function renderBooks(books) {
     let book = books[i];
     // For each book, append a new row to our table
     $('#bookShelf').append(`
-      <tr>
+      <tr data-id="${book.id}">
         <td>${book.title}</td>
         <td>${book.author}</td>
+        <td><button class="deleteBtn">Delete</button></td>
       </tr>
     `);
   }
